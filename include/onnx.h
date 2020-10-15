@@ -3,8 +3,8 @@
 //
 
 
-#include <onnxruntime_cxx_api.h>
-#include <onnxruntime_c_api.h>
+#include <onnx/onnxruntime_cxx_api.h>
+#include <onnx/onnxruntime_c_api.h>
 #include "constants.h"
 class OnnxInstance {
     public:
