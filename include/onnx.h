@@ -9,7 +9,7 @@
 class OnnxInstance {
     public:
 
-        Ort::Session init(std::string model_path,std::string model_name,int num_threads=1);
+        Ort::Session init(std::string model_path,int num_threads=1);
         std::vector<Ort::Value> inference(Ort::Session &session,std::vector<std::vector<float>> images);
         std::vector<Input> inputs;
         std::vector<const char*> input_names;
@@ -20,6 +20,7 @@ class OnnxInstance {
     private:
         void createInputsInfo(Ort::Session &session);
         void createOutputsInfo(Ort::Session &session);
+
 };
 
 

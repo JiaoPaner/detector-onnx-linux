@@ -14,22 +14,21 @@ Ort::Env env{ ORT_LOGGING_LEVEL_WARNING, "detector" };
  * @param num_threads
  * @return
  */
-Ort::Session OnnxInstance::init(std::string model_path,std::string model_name,int num_threads) {
+Ort::Session OnnxInstance::init(std::string model_path,int num_threads) {
 
     auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
     Ort::SessionOptions session_option;
     session_option.SetIntraOpNumThreads(num_threads);
 
 #ifdef GPU
-    OrtSessionOptionsAppendExecutionProvider_CUDA(session_option, 0);
+    auto cuda = OrtSessionOptionsAppendExecutionProvider_CUDA(session_option, 0);
 #endif
 
     session_option.SetGraphOptimizationLevel(ORT_ENABLE_BASIC);
     Ort::Session session(env, model_path.c_str(), session_option);
     this->createInputsInfo(session);
     this->createOutputsInfo(session);
-    this->model_name = model_name;
-    std::string modelName(model_name);
+    this->model_name = detectorConfig::modelName;
     this->label_name = modelLabel::map.at(model_name);
     return session;
 }

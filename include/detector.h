@@ -4,12 +4,10 @@
 
 #include <onnx/onnxruntime_cxx_api.h>
 #include <onnx/onnxruntime_c_api.h>
-#include "constants.h"
-
 
 class Detector {
 public:
-    int init(const char* model_path, const char* model_name, int num_threads);
+    int init(const char* model_path,int num_threads);
     char* detect(cv::Mat image, float min_score);
     char* ssdAnalysis(std::vector<Ort::Value> &output_tensor,
                       int width, int height, const std::map<std::string,int> &output_name_index,

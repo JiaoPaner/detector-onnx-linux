@@ -10,8 +10,8 @@ static Detector detector;
  * @param num_threads
  * @return
  */
-int init(const char* model_path, const char* model_name,int num_threads) {
-    return detector.init(model_path, model_name, num_threads);
+int init(const char* model_path,int num_threads) {
+    return detector.init(model_path, num_threads);
 }
 int unload() {
     return detector.unload();
@@ -55,7 +55,7 @@ int main(){
 
     //test detectByFile()
     const char* model_path = "/home/jiaopan/projects/c++/onnx_algorithm_linux/model/yolov5s.onnx";
-    int status = init(model_path,"yolov5",1);
+    int status = init(model_path,1);
     std::cout << "status" << status << std::endl;
     char* result = detectByFile("/home/jiaopan/Downloads/bus.jpg",0.5);
     std::cout << "result:" << result << std::endl;

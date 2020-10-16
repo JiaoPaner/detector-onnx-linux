@@ -4,50 +4,34 @@
 
 #include "utils.h"
 #include <iterator>
- void utils::createInputImage(std::vector<float> &input,cv::Mat image,const int width,int height, int channels,bool normalization){
-     cv::Mat dst(width, height, CV_8UC3);
-     cv::resize(image, dst, cv::Size(width, height));
-     std::vector<float> input_image(width * height * channels,0.f);
-     //float* input_data = input_image.data();
-     //std::fill(input.begin(),input.end(),0.f);
-     if(normalization){
-         for (int channel = 0; channel < channels; channel++) {
-             for (int i = 0; i < height; i++) {
-                 for (int j = 0; j < width; j++) {
-                     if(channel == 0) input_image[channel*height*width + i * width + j] = ((dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0 - 0.406) / 0.225;
-                     if(channel == 1) input_image[channel*height*width + i * width + j] = ((dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0 - 0.456) / 0.224;
-                     if(channel == 2) input_image[channel*height*width + i * width + j] = ((dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0 - 0.485) / 0.229;
-                 }
-             }
-         }
-     }
-     else{
-         for (int channel = 0; channel < channels; channel++) {
-             for (int i = 0; i < height; i++) {
-                 for (int j = 0; j < width; j++) {
-                     if(channel == 0) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]);
-                     if(channel == 1) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]) ;
-                     if(channel == 2) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]);
-                 }
-             }
-         }
-     }
 
-     input = input_image;
-}
-void utils::createYolov5InputImage(std::vector<float> &input, cv::Mat image, const int width, int height, int channels) {
+void utils::createInputImage(std::vector<float> &input, cv::Mat image, const int width, int height, int channels,bool normalization) {
     cv::Mat dst(width, height, CV_8UC3);
     cv::resize(image, dst, cv::Size(width, height));
     std::vector<float> input_image(width * height * channels,0.f);
-    for (int channel = 0; channel < channels; channel++) {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if(channel == 0) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0;
-                if(channel == 1) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0;
-                if(channel == 2) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0;
+    if(normalization){
+        for (int channel = 0; channel < channels; channel++) {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if(channel == 0) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0;
+                    if(channel == 1) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0;
+                    if(channel == 2) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]) / 255.0;
+                }
             }
         }
     }
+    else{
+        for (int channel = 0; channel < channels; channel++) {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if(channel == 0) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]);
+                    if(channel == 1) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]) ;
+                    if(channel == 2) input_image[channel*height*width + i * width + j] = (dst.ptr<uchar>(i)[j * 3 + channel]);
+                }
+            }
+        }
+    }
+
     input = input_image;
 }
 void utils::nms(const std::vector<cv::Rect> &srcRects, std::vector<cv::Rect> &resRects, std::vector<int> &resIndexs,float thresh) {

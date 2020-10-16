@@ -9,10 +9,10 @@
 #include "onnx.h"
 #include "detector.h"
 
-int Detector::init(const char* model_path, const char* model_name, int num_threads){
+int Detector::init(const char* model_path,int num_threads){
     try {
         this->unload();
-        this->session = this->onnx.init(model_path, model_name, num_threads);
+        this->session = this->onnx.init(model_path, num_threads);
         std::cout << "this is a detector lib by jiaopaner@qq.com" << std::endl;
         return 0;
     }
@@ -25,8 +25,7 @@ int Detector::init(const char* model_path, const char* model_name, int num_threa
 char * Detector::detect(cv::Mat image, float min_score){
     std::vector<float> input_image;
     const std::map<std::string, int> params = detectorConfig::map.at(this->onnx.model_name);
-    //utils::createInputImage(input_image, image, params.at("width"), params.at("height"), params.at("channels"), true);
-    utils::createYolov5InputImage(input_image, image, params.at("height"), params.at("width"), params.at("channels"));
+    utils::createInputImage(input_image, image, params.at("width"), params.at("height"), params.at("channels"), true);
     std::vector<std::vector<float>> images;
     images.emplace_back(input_image);
     std::vector<Ort::Value> output_tensor = this->onnx.inference(this->session, images);

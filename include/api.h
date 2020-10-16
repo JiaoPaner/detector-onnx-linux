@@ -13,7 +13,7 @@ extern "C" {
     /**
      * common api
      */
-    int init(const char* model_path,const char* model_name,int num_threads=1);
+    int init(const char* model_path,int num_threads=1);
     int unload();
     /**
      * detection api
