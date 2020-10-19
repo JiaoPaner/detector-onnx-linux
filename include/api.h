@@ -18,8 +18,8 @@ extern "C" {
     /**
      * detection api
      */
-    char* detectByBase64(const char* base64_data, float min_score = 0.5f);
-    char* detectByFile(const char* file, float min_score = 0.5f);
+    char* detectByBase64(const char* base64_data, float min_score);
+    char* detectByFile(const char* file, float min_score);
 
 
     /**

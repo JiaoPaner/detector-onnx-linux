@@ -7,6 +7,8 @@
 #include "cuda_provider_factory.h"
 #endif
 
+#include <iostream>
+
 Ort::Env env{ ORT_LOGGING_LEVEL_WARNING, "detector" };
 /**
  * init session,load model
@@ -21,6 +23,7 @@ Ort::Session OnnxInstance::init(std::string model_path,int num_threads) {
     session_option.SetIntraOpNumThreads(num_threads);
 
 #ifdef GPU
+    std::cout << "use gpu." << std::endl;
     auto cuda = OrtSessionOptionsAppendExecutionProvider_CUDA(session_option, 0);
 #endif
 

@@ -54,7 +54,7 @@ int main(){
 
 
     //test detectByFile()
-    const char* model_path = "/home/jiaopan/projects/c++/onnx_algorithm_linux/model/yolov5s.onnx";
+    const char* model_path = "/home/jiaopan/projects/c++/detector-onnx-linux/model/yolov5s-320.onnx";
     int status = init(model_path,1);
     std::cout << "status" << status << std::endl;
     char* result = detectByFile("/home/jiaopan/Downloads/bus.jpg",0.5);
