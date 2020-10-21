@@ -46,14 +46,19 @@ namespace detectorConfig{
             {"min_score",.3f}
     };
     const std::map<std::string, int> yolov5 = {
-            { "width",320 },{ "height",320 },{ "channels",3 },
+            { "width",640 },{ "height",640 },{ "channels",3 },
             { "output",0 },{ "confidence_index",4 },{ "label_start_index",5 },
             { "dimensions",85 }
     };
     const std::map<std::string,std::map<std::string,int>> map = {
             {"ssd",ssd},{"yolov5",yolov5}
     };
+#ifdef SSD
+    const std::string modelName{"ssd"};
+#else
     const std::string modelName{"yolov5"};
+#endif
+
 }
 
 

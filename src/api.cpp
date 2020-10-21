@@ -11,6 +11,8 @@ static Detector detector;
  * @return
  */
 int init(const char* model_path,int num_threads) {
+    std::cout << "this is a detector lib by jiaopaner@qq.com" << std::endl;
+    std::cout << "loading model:" << model_path << std::endl;
     return detector.init(model_path, num_threads);
 }
 int unload() {

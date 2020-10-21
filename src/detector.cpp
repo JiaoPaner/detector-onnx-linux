@@ -13,7 +13,6 @@ int Detector::init(const char* model_path,int num_threads){
     try {
         this->unload();
         this->session = this->onnx.init(model_path, num_threads);
-        std::cout << "this is a detector lib by jiaopaner@qq.com" << std::endl;
         return 0;
     }
     catch (const std::exception &e) {
@@ -29,8 +28,11 @@ char * Detector::detect(cv::Mat image, float min_score){
     std::vector<std::vector<float>> images;
     images.emplace_back(input_image);
     std::vector<Ort::Value> output_tensor = this->onnx.inference(this->session, images);
-    //return Detector::ssdAnalysis(output_tensor, image.cols, image.rows, params, onnx.label_name, min_score);
+#ifdef SSD
+    return Detector::ssdAnalysis(output_tensor, image.cols, image.rows, params, onnx.label_name, min_score);
+#else
     return this->yolov5Analysis(output_tensor, image.cols, image.rows, params, this->onnx.label_name, min_score);
+#endif
 }
 
 char *Detector::ssdAnalysis(std::vector<Ort::Value> &output_tensor,
