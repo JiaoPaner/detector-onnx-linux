@@ -11,9 +11,10 @@ static Detector detector;
  * @return
  */
 int init(const char* model_path,int num_threads) {
-    std::cout << "this is a detector lib by jiaopaner@qq.com" << std::endl;
     std::cout << "loading model:" << model_path << std::endl;
-    return detector.init(model_path, num_threads);
+    int status =detector.init(model_path, num_threads);
+    std::cout << "this is a detector lib by jiaopaner@qq.com" << std::endl;
+    return status;
 }
 int unload() {
     return detector.unload();
@@ -52,14 +53,19 @@ char* detectByFile(const char* file, float min_score) {
     }
 }
 
+#include <chrono>
+using std::chrono::high_resolution_clock;
+using std::chrono::milliseconds;
 int main(){
-
-
     //test detectByFile()
-    const char* model_path = "/home/jiaopan/projects/c++/detector-onnx-linux/model/yolov5s-320.onnx";
+    const char* model_path = "/home/jiaopan/projects/c++/detector-onnx-linux/model/yolov5s.onnx";
     int status = init(model_path,1);
     std::cout << "status" << status << std::endl;
+    high_resolution_clock::time_point start = high_resolution_clock::now();
     char* result = detectByFile("/home/jiaopan/Downloads/bus.jpg",0.5);
+    high_resolution_clock::time_point end = high_resolution_clock::now();
+    milliseconds cost = std::chrono::duration_cast<milliseconds>(end - start);
+    std::cout << "The elapsed is:" << cost.count() <<"ms"<< std::endl;
     std::cout << "result:" << result << std::endl;
     //std::cout << "unload:" << unload("detector") << std::endl;
 

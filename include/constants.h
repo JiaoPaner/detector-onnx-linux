@@ -53,11 +53,9 @@ namespace detectorConfig{
     const std::map<std::string,std::map<std::string,int>> map = {
             {"ssd",ssd},{"yolov5",yolov5}
     };
-#ifdef SSD
-    const std::string modelName{"ssd"};
-#else
+
     const std::string modelName{"yolov5"};
-#endif
+
 
 }
 
