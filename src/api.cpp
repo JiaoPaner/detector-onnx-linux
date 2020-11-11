@@ -58,11 +58,11 @@ using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
 int main(){
     //test detectByFile()
-    const char* model_path = "/home/jiaopan/projects/c++/detector-onnx-linux/model/yolov5s.onnx";
+    const char* model_path = "/home/jiaopan/projects/c++/detector-onnx-linux/model/best.onnx";
     int status = init(model_path,1);
     std::cout << "status" << status << std::endl;
     high_resolution_clock::time_point start = high_resolution_clock::now();
-    char* result = detectByFile("/home/jiaopan/Downloads/bus.jpg",0.5);
+    char* result = detectByFile("/home/jiaopan/Downloads/b2.jpg",0.3);
     high_resolution_clock::time_point end = high_resolution_clock::now();
     milliseconds cost = std::chrono::duration_cast<milliseconds>(end - start);
     std::cout << "The elapsed is:" << cost.count() <<"ms"<< std::endl;
@@ -70,7 +70,7 @@ int main(){
     //std::cout << "unload:" << unload("detector") << std::endl;
 
     /**/
-    cv::Mat image = cv::imread("/home/jiaopan/Downloads/bus.jpg");
+    cv::Mat image = cv::imread("/home/jiaopan/Downloads/b2.jpg");
     cv::Scalar colors[20] = { cv::Scalar(255, 0, 0), cv::Scalar(0, 255, 0),cv::Scalar(0,0,255),
                               cv::Scalar(255,255,0),cv::Scalar(255,0,255), cv::Scalar(0,255,255),
                               cv::Scalar(255,255,255), cv::Scalar(127,0,0),cv::Scalar(0,127,0),
@@ -102,6 +102,6 @@ int main(){
     imwrite("output.jpg", image);
 
     // unload();//unload loaded model
-    std::cin.get();
+    //std::cin.get();
     return 0;
 }

@@ -36,9 +36,6 @@ namespace modelLabel{
            {"ssd","coco"},{"yolov5","coco"}
     };
 }
-
-
-
 namespace detectorConfig{
     const std::map<std::string,int> ssd = {
             {"width",1200}, {"height",1200}, {"channels",3},
@@ -48,7 +45,7 @@ namespace detectorConfig{
     const std::map<std::string, int> yolov5 = {
             { "width",640 },{ "height",640 },{ "channels",3 },
             { "output",0 },{ "confidence_index",4 },{ "label_start_index",5 },
-            { "dimensions",85 }
+            { "dimensions",6 }
     };
     const std::map<std::string,std::map<std::string,int>> map = {
             {"ssd",ssd},{"yolov5",yolov5}

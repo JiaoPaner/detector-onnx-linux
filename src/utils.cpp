@@ -5,7 +5,47 @@
 #include "utils.h"
 #include <iterator>
 
+
+cv::Mat preprocess_img(cv::Mat& img) {
+    int w, h, x, y;
+    float r_w = 640/ (img.cols*1.0);
+    float r_h = 640 / (img.rows*1.0);
+    if (r_h > r_w) {
+        w = 640;
+        h = r_w * img.rows;
+        x = 0;
+        y = (640 - h) / 2;
+    }
+    else {
+        w = r_h * img.cols;
+        h = 640;
+        x = (640 - w) / 2;
+        y = 0;
+    }
+    cv::Mat re(h, w, CV_8UC3);
+    cv::resize(img, re, re.size(), 0, 0, cv::INTER_LINEAR);
+    cv::Mat out(640, 640, CV_8UC3, cv::Scalar(128, 128, 128));
+    re.copyTo(out(cv::Rect(x, y, re.cols, re.rows)));
+    return out;
+}
+
+
 void utils::createInputImage(std::vector<float> &input, cv::Mat image, const int width, int height, int channels,bool normalization) {
+    cv::Mat pr_img = preprocess_img(image); // letterbox BGR to RGB
+    std::vector<float> input_image(width * height * channels,0.f);
+    int i = 0;
+    for (int row = 0; row < 640; ++row) {
+        uchar* uc_pixel = pr_img.data + row * pr_img.step;
+        for (int col = 0; col < 640; ++col) {
+            input_image[i] = (float)uc_pixel[2] / 255.0;
+            input_image[i + 640 * 640] = (float)uc_pixel[1] / 255.0;
+            input_image[i + 2 * 640 * 640] = (float)uc_pixel[0] / 255.0;
+            uc_pixel += 3;
+            ++i;
+        }
+    }
+    input = input_image;
+    /*
     cv::Mat dst(width, height, CV_8UC3);
     cv::resize(image, dst, cv::Size(width, height));
     std::vector<float> input_image(width * height * channels,0.f);
@@ -33,6 +73,7 @@ void utils::createInputImage(std::vector<float> &input, cv::Mat image, const int
     }
 
     input = input_image;
+     */
 }
 void utils::nms(const std::vector<cv::Rect> &srcRects, std::vector<cv::Rect> &resRects, std::vector<int> &resIndexs,float thresh) {
     resRects.clear();

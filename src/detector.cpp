@@ -38,6 +38,12 @@ char *Detector::yolov5Analysis(std::vector<Ort::Value> &output_tensor, int width
                                float min_score) {
 
     float* output = output_tensor[output_name_index.at("output")].GetTensorMutableData<float>();
+
+    for (int i = 0; i < 10; ++i) {
+        std::cout << "output["<< i <<"]:" << output[i] << std::endl;
+    }
+
+
     size_t size = output_tensor[output_name_index.at("output")].GetTensorTypeAndShapeInfo().GetElementCount();
     int dimensions = output_name_index.at("dimensions");
     int rows = size / dimensions;
