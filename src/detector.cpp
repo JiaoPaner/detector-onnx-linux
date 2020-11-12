@@ -22,15 +22,14 @@ int Detector::init(const char* model_path,int num_threads){
 }
 
 char * Detector::detect(cv::Mat image, float min_score){
+    int width = image.cols,height = image.rows;
     std::vector<float> input_image;
     const std::map<std::string, int> params = detectorConfig::map.at(this->onnx.model_name);
     utils::createInputImage(input_image, image, params.at("width"), params.at("height"), params.at("channels"), true);
     std::vector<std::vector<float>> images;
     images.emplace_back(input_image);
     std::vector<Ort::Value> output_tensor = this->onnx.inference(this->session, images);
-
-    return this->yolov5Analysis(output_tensor, image.cols, image.rows, params, this->onnx.label_name, min_score);
-
+    return this->yolov5Analysis(output_tensor, width, height, params, this->onnx.label_name, min_score);
 }
 
 char *Detector::yolov5Analysis(std::vector<Ort::Value> &output_tensor, int width, int height,
@@ -38,11 +37,6 @@ char *Detector::yolov5Analysis(std::vector<Ort::Value> &output_tensor, int width
                                float min_score) {
 
     float* output = output_tensor[output_name_index.at("output")].GetTensorMutableData<float>();
-
-    for (int i = 0; i < 10; ++i) {
-        std::cout << "output["<< i <<"]:" << output[i] << std::endl;
-    }
-
 
     size_t size = output_tensor[output_name_index.at("output")].GetTensorTypeAndShapeInfo().GetElementCount();
     int dimensions = output_name_index.at("dimensions");
@@ -67,30 +61,22 @@ char *Detector::yolov5Analysis(std::vector<Ort::Value> &output_tensor, int width
     cv::Vec4f location;
     for (int i = 0; i < rows; ++i) {
         int index = i * dimensions;
-        if (output[index + confidenceIndex] <= 0.4f) continue;
+        if (output[index + confidenceIndex] <= min_score) continue;
 
-//        for (int j = labelStartIndex; j < dimensions; ++j) {
-//            output[index + j] = output[index + j] * output[index + confidenceIndex];
-//        }
+        location[0] = (output[index] - output[index + 2] / 2.0) / xGain;//top left x
+        location[1] = (output[index + 1] - output[index + 3] / 2.0) / yGain;//top left y
+        location[2] = (output[index] + output[index + 2] / 2.0) / xGain;//bottom right x
+        location[3] = (output[index + 1] + output[index + 3] / 2.0) / yGain;//bottom right y
 
+        locations.emplace_back(location);
+
+        rect = cv::Rect(location[0], location[1],location[2] - location[0], location[3] - location[1]);
+        src_rects.push_back(rect);
         for (int k = labelStartIndex; k < dimensions; ++k) {
-            if (output[index + k] <= min_score) continue;
-
-            location[0] = (output[index] - output[index + 2] / 2) / xGain;//top left x
-            location[1] = (output[index + 1] - output[index + 3] / 2) / yGain;//top left y
-            location[2] = (output[index] + output[index + 2] / 2) / xGain;//bottom right x
-            location[3] = (output[index + 1] + output[index + 3] / 2) / yGain;//bottom right y
-
-            locations.emplace_back(location);
-
-            rect = cv::Rect(location[0], location[1],
-                            location[2] - location[0], location[3] - location[1]);
-            src_rects.push_back(rect);
+            if (output[index + k] * output[index + confidenceIndex]  <= 0.3) continue;
             labels.emplace_back(k - labelStartIndex);
-
-
-            confidences.emplace_back(output[index + k]);
         }
+        confidences.emplace_back(output[index + confidenceIndex]);
 
     }
     utils::nms(src_rects, res_rects, res_indexs);

@@ -26,22 +26,26 @@ namespace labels{
             "keyboard","cell phone","microwave","oven","toaster","sink","refrigerator","book",
             "clock","vase","scissors","teddy bear","hair drier","toothbrush"
     };
-    const std::map<std::string,std::vector<std::string>> map = {
-            {"coco",coco}
+    const std::vector<std::string> custom = {
+            "head"
     };
+    const std::map<std::string,std::vector<std::string>> map = {
+            {"coco",coco},{"custom",custom}
+    };
+
 }
 
 namespace modelLabel{
     const std::map<std::string,std::string> map = {
-        {"yolov5","coco"}
+        {"yolov5","custom"}
     };
 }
 namespace detectorConfig{
-
+    const int classes = 1;//update classes value  when replacing model
     const std::map<std::string, int> yolov5 = {
             { "width",640 },{ "height",640 },{ "channels",3 },
             { "output",0 },{ "confidence_index",4 },{ "label_start_index",5 },
-            { "dimensions",6 }
+            { "dimensions",classes + 5 }
     };
     const std::map<std::string,std::map<std::string,int>> map = {
             {"yolov5",yolov5}

@@ -42,9 +42,7 @@ char* detectByBase64(const char* base64_data, float min_score) {
 char* detectByFile(const char* file, float min_score) {
     try {
         cv::Mat image = cv::imread(file);
-        cv::Mat dst(640, 640, CV_8UC3);
-        cv::resize(image, dst, cv::Size(640, 640));
-        return detector.detect(dst, min_score);
+        return detector.detect(image, min_score);
     }
     catch (const char* msg) {
         cJSON* result = cJSON_CreateObject(), * data = cJSON_CreateArray();;
@@ -64,29 +62,16 @@ int main(){
     int status = init(model_path,1);
     std::cout << "status" << status << std::endl;
     high_resolution_clock::time_point start = high_resolution_clock::now();
-    char* result = detectByFile("/home/jiaopan/Downloads/test2.jpg",0.3);
+    char* result = detectByFile("/home/jiaopan/Downloads/test.jpg",0.5);
     high_resolution_clock::time_point end = high_resolution_clock::now();
     milliseconds cost = std::chrono::duration_cast<milliseconds>(end - start);
     std::cout << "The elapsed is:" << cost.count() <<"ms"<< std::endl;
     std::cout << "result:" << result << std::endl;
-    //std::cout << "unload:" << unload("detector") << std::endl;
 
-    /**/
-    cv::Mat image = cv::imread("/home/jiaopan/Downloads/test2.jpg");
-    cv::Mat dst(640, 640, CV_8UC3);
-    cv::resize(image, dst, cv::Size(640, 640));
-    cv::Scalar colors[20] = { cv::Scalar(255, 0, 0), cv::Scalar(0, 255, 0),cv::Scalar(0,0,255),
-                              cv::Scalar(255,255,0),cv::Scalar(255,0,255), cv::Scalar(0,255,255),
-                              cv::Scalar(255,255,255), cv::Scalar(127,0,0),cv::Scalar(0,127,0),
-                              cv::Scalar(0,0,127),cv::Scalar(127,127,0), cv::Scalar(127,0,127),
-                              cv::Scalar(0,127,127), cv::Scalar(127,127,127),cv::Scalar(127,255,0),
-                              cv::Scalar(127,0,255),cv::Scalar(127,255,255), cv::Scalar(0,127,255),
-                              cv::Scalar(255,127,0), cv::Scalar(0,255,127) };  //ÑÕÉ«
-
+    cv::Mat image = cv::imread("/home/jiaopan/Downloads/test.jpg");
     cJSON *root;
     root = cJSON_Parse(result);
     cJSON *code = cJSON_GetObjectItem(root, "code");
-
     if (code->valueint == 0) {
         cJSON *data = cJSON_GetObjectItem(root, "data");
         int size = cJSON_GetArraySize(data);
@@ -98,12 +83,11 @@ int main(){
             cJSON *location = cJSON_GetObjectItem(item, "location");
             rect = cv::Rect(cJSON_GetObjectItem(location, "x")->valuedouble, cJSON_GetObjectItem(location, "y")->valuedouble,
                             cJSON_GetObjectItem(location, "width")->valuedouble, cJSON_GetObjectItem(location, "height")->valuedouble);
-            rectangle(dst, rect, cv::Scalar(colors[i % 4]), 3, 1, 0);
-            putText(dst, label->valuestring, cv::Point(rect.x + 5, rect.y + 13), cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(colors[i % 4]), 1, 8);
-
+            rectangle(image, rect, cv::Scalar(0x27, 0xC1, 0x36), 2);
+            cv::putText(image, label->valuestring, cv::Point(rect.x+5, rect.y+1), cv::FONT_HERSHEY_PLAIN, 1.5, cv::Scalar(0xFF, 0xFF, 0xFF), 2);
         }
     }
-    imwrite("output.jpg", dst);
+    imwrite("output.jpg", image);
 
     // unload();//unload loaded model
     //std::cin.get();
