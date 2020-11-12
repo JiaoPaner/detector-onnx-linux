@@ -69,9 +69,9 @@ char *Detector::yolov5Analysis(std::vector<Ort::Value> &output_tensor, int width
         int index = i * dimensions;
         if (output[index + confidenceIndex] <= 0.4f) continue;
 
-        for (int j = labelStartIndex; j < dimensions; ++j) {
-            output[index + j] = output[index + j] * output[index + confidenceIndex];
-        }
+//        for (int j = labelStartIndex; j < dimensions; ++j) {
+//            output[index + j] = output[index + j] * output[index + confidenceIndex];
+//        }
 
         for (int k = labelStartIndex; k < dimensions; ++k) {
             if (output[index + k] <= min_score) continue;

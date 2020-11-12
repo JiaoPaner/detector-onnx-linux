@@ -33,28 +33,20 @@ namespace labels{
 
 namespace modelLabel{
     const std::map<std::string,std::string> map = {
-           {"ssd","coco"},{"yolov5","coco"}
+        {"yolov5","coco"}
     };
 }
 namespace detectorConfig{
-    const std::map<std::string,int> ssd = {
-            {"width",1200}, {"height",1200}, {"channels",3},
-            {"bboxs",0},{"labels",1},{"scores",2},
-            {"min_score",.3f}
-    };
+
     const std::map<std::string, int> yolov5 = {
             { "width",640 },{ "height",640 },{ "channels",3 },
             { "output",0 },{ "confidence_index",4 },{ "label_start_index",5 },
             { "dimensions",6 }
     };
     const std::map<std::string,std::map<std::string,int>> map = {
-            {"ssd",ssd},{"yolov5",yolov5}
+            {"yolov5",yolov5}
     };
 
     const std::string modelName{"yolov5"};
-
-
 }
-
-
 #endif //OBJECT_DETECT_CONSTANTS_H

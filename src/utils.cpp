@@ -3,28 +3,30 @@
 //
 
 #include "utils.h"
+#include "constants.h"
 #include <iterator>
 
 
 cv::Mat preprocess_img(cv::Mat& img) {
+    int width = detectorConfig::yolov5.at("width"),height = detectorConfig::yolov5.at("height");
     int w, h, x, y;
-    float r_w = 640/ (img.cols*1.0);
-    float r_h = 640 / (img.rows*1.0);
+    float r_w = width/ (img.cols * 1.0);
+    float r_h = height / (img.rows * 1.0);
     if (r_h > r_w) {
-        w = 640;
+        w = width;
         h = r_w * img.rows;
         x = 0;
-        y = (640 - h) / 2;
+        y = (height - h) / 2;
     }
     else {
         w = r_h * img.cols;
-        h = 640;
-        x = (640 - w) / 2;
+        h = height;
+        x = (width - w) / 2;
         y = 0;
     }
     cv::Mat re(h, w, CV_8UC3);
     cv::resize(img, re, re.size(), 0, 0, cv::INTER_LINEAR);
-    cv::Mat out(640, 640, CV_8UC3, cv::Scalar(128, 128, 128));
+    cv::Mat out(height, width, CV_8UC3, cv::Scalar(128, 128, 128));
     re.copyTo(out(cv::Rect(x, y, re.cols, re.rows)));
     return out;
 }
