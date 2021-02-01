@@ -13,6 +13,7 @@ int Detector::init(const char* model_path,int num_threads){
     try {
         this->unload();
         this->session = this->onnx.init(model_path, num_threads);
+        std::cout << "model_name:" << this->onnx.model_name << std::endl;
         return 0;
     }
     catch (const std::exception &e) {
@@ -25,7 +26,7 @@ char * Detector::detect(cv::Mat image, float min_score){
     int width = image.cols,height = image.rows;
     std::vector<float> input_image;
     const std::map<std::string, int> params = detectorConfig::map.at(this->onnx.model_name);
-    utils::createInputImage(input_image, image, params.at("width"), params.at("height"), params.at("channels"), true);
+    utils::createInputImage(input_image, image, params.at("width"), params.at("height"), params.at("channels"));
     std::vector<std::vector<float>> images;
     images.emplace_back(input_image);
     std::vector<Ort::Value> output_tensor = this->onnx.inference(this->session, images);

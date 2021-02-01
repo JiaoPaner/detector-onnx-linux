@@ -32,25 +32,7 @@ cv::Mat preprocess_img(cv::Mat& img) {
 }
 
 
-void utils::createInputImage(std::vector<float> &input, cv::Mat image, const int width, int height, int channels,bool normalization) {
-    int input_width = detectorConfig::yolov5.at("width"),input_height = detectorConfig::yolov5.at("height");
-    cv::Mat dst(input_height, input_width, CV_8UC3);
-    cv::resize(image, dst, cv::Size(input_width, input_height));
-    cv::Mat pr_img = preprocess_img(dst); // letterbox BGR to RGB
-    std::vector<float> input_image(width * height * channels,0.f);
-    int i = 0;
-    for (int row = 0; row < input_height; ++row) {
-        uchar* uc_pixel = pr_img.data + row * pr_img.step;
-        for (int col = 0; col < input_width; ++col) {
-            input_image[i] = (float)uc_pixel[2] / 255.0;
-            input_image[i + input_width * input_height] = (float)uc_pixel[1] / 255.0;
-            input_image[i + 2 * input_width * input_height] = (float)uc_pixel[0] / 255.0;
-            uc_pixel += 3;
-            ++i;
-        }
-    }
-    input = input_image;
-    /*
+void utils::createInputImage(std::vector<float> &input, cv::Mat image,bool normalization, const int width, int height, int channels) {
     cv::Mat dst(width, height, CV_8UC3);
     cv::resize(image, dst, cv::Size(width, height));
     std::vector<float> input_image(width * height * channels,0.f);
@@ -78,8 +60,28 @@ void utils::createInputImage(std::vector<float> &input, cv::Mat image, const int
     }
 
     input = input_image;
-     */
 }
+
+void utils::createInputImage(std::vector<float> &input, cv::Mat image, const int width, int height, int channels) {
+    int input_width = detectorConfig::yolov5.at("width"),input_height = detectorConfig::yolov5.at("height");
+    cv::Mat dst(input_height, input_width, CV_8UC3);
+    cv::resize(image, dst, cv::Size(input_width, input_height));
+    cv::Mat pr_img = preprocess_img(dst); // letterbox BGR to RGB
+    std::vector<float> input_image(width * height * channels,0.f);
+    int i = 0;
+    for (int row = 0; row < input_height; ++row) {
+        uchar* uc_pixel = pr_img.data + row * pr_img.step;
+        for (int col = 0; col < input_width; ++col) {
+            input_image[i] = (float)uc_pixel[2] / 255.0;
+            input_image[i + input_width * input_height] = (float)uc_pixel[1] / 255.0;
+            input_image[i + 2 * input_width * input_height] = (float)uc_pixel[0] / 255.0;
+            uc_pixel += 3;
+            ++i;
+        }
+    }
+    input = input_image;
+}
+
 void utils::nms(const std::vector<cv::Rect> &srcRects, std::vector<cv::Rect> &resRects, std::vector<int> &resIndexs,float thresh) {
     resRects.clear();
     const size_t size = srcRects.size();
@@ -183,3 +185,5 @@ float* utils::stringToArray(std::string str) {
     }
     return array;
 }
+
+

@@ -10,7 +10,7 @@ def frame2base64(frame):
     img = Image.fromarray(frame)  # 将每一帧转为Image
     output_buffer = BytesIO()  # 创建一个BytesIO
     img.save(output_buffer, format='JPEG')  # 写入output_buffer
-    byte_data = output_bufafer.getvalue()  # 在内存中读取
+    byte_data = output_buffer.getvalue()  # 在内存中读取
     base64_data = base64.b64encode(byte_data)  # 转为BASE64
     output_buffer.close()
     return base64_data
@@ -18,7 +18,7 @@ def frame2base64(frame):
 
 if __name__ == '__main__':
     so = ctypes.cdll.LoadLibrary("/home/jiaopan/projects/c++/detector-onnx-linux/cmake-build-debug/libdetector.so")
-    model_path = bytes("/home/jiaopan/projects/c++/detector-onnx-linux/model/yolov5m.onnx", "utf-8")
+    model_path = bytes("/home/jiaopan/projects/c++/detector-onnx-linux/model/yolov5s.onnx", "utf-8")
     status = so.init(model_path, 1)
     print(status)
     image = bytes("/home/jiaopan/Downloads/bus.jpg", "utf-8")
