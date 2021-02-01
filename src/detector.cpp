@@ -13,7 +13,6 @@ int Detector::init(const char* model_path,int num_threads){
     try {
         this->unload();
         this->session = this->onnx.init(model_path, num_threads);
-        std::cout << "model_name:" << this->onnx.model_name << std::endl;
         return 0;
     }
     catch (const std::exception &e) {
