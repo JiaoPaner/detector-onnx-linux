@@ -12,7 +12,7 @@ link_directories(lib)
 file(GLOB src src/*.cpp include/*.h src/*.c)
 set(SRC ${src})
 
-add_executable(detector ${SRC})
-#add_library(detector SHARED ${SRC})
+#add_executable(detector ${SRC})
+add_library(detector SHARED ${SRC})
 
 target_link_libraries(detector ${OpenCV_LIBS} onnxruntime)

@@ -58,17 +58,17 @@ using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
 int main(){
     //test detectByFile()
-    const char* model_path = "/home/jiaopan/projects/c++/detector-onnx-linux/model/head.onnx";
+    const char* model_path = "/home/jiaopan/projects/c++/detector-onnx-linux/model/yolov5s.onnx";
     int status = init(model_path,1);
     std::cout << "status" << status << std::endl;
     high_resolution_clock::time_point start = high_resolution_clock::now();
-    char* result = detectByFile("/home/jiaopan/Downloads/test.jpg",0.5);
+    char* result = detectByFile("/home/jiaopan/Downloads/bus.jpg",0.5);
     high_resolution_clock::time_point end = high_resolution_clock::now();
     milliseconds cost = std::chrono::duration_cast<milliseconds>(end - start);
     std::cout << "The elapsed is:" << cost.count() <<"ms"<< std::endl;
     std::cout << "result:" << result << std::endl;
 
-    cv::Mat image = cv::imread("/home/jiaopan/Downloads/test.jpg");
+    cv::Mat image = cv::imread("/home/jiaopan/Downloads/bus.jpg");
     cJSON *root;
     root = cJSON_Parse(result);
     cJSON *code = cJSON_GetObjectItem(root, "code");

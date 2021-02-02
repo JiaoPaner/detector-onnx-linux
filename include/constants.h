@@ -37,11 +37,11 @@ namespace labels{
 
 namespace modelLabel{
     const std::map<std::string,std::string> map = {
-        {"yolov5","custom"} //update label value  when replacing model
+        {"yolov5","coco"} //update label value  when replacing model
     };
 }
 namespace detectorConfig{
-    const int classes = 1;//update classes value  when replacing model
+    const int classes = 80;//update classes value  when replacing model
     const std::map<std::string, int> yolov5 = {
             { "width",640 },{ "height",640 },{ "channels",3 },
             { "output",0 },{ "confidence_index",4 },{ "label_start_index",5 },

@@ -47,6 +47,7 @@ char *Detector::yolov5Analysis(std::vector<Ort::Value> &output_tensor, int width
     float modelHeight = (float)output_name_index.at("height");
     float xGain = modelWidth / width;
     float yGain = modelHeight / height;
+
     const std::vector<std::string> classes = labels::map.at(label_name);
 
     std::vector<cv::Vec4f> locations;
@@ -63,18 +64,18 @@ char *Detector::yolov5Analysis(std::vector<Ort::Value> &output_tensor, int width
         int index = i * dimensions;
         if (output[index + confidenceIndex] <= min_score) continue;
 
-        location[0] = (output[index] - output[index + 2] / 2.0) / xGain;//top left x
-        location[1] = (output[index + 1] - output[index + 3] / 2.0) / yGain;//top left y
-        location[2] = (output[index] + output[index + 2] / 2.0) / xGain;//bottom right x
-        location[3] = (output[index + 1] + output[index + 3] / 2.0) / yGain;//bottom right y
-
-        locations.emplace_back(location);
-
-        rect = cv::Rect(location[0], location[1],location[2] - location[0], location[3] - location[1]);
-        src_rects.push_back(rect);
         for (int k = labelStartIndex; k < dimensions; ++k) {
             if (output[index + k] * output[index + confidenceIndex]  <= 0.3) continue;
             labels.emplace_back(k - labelStartIndex);
+            location[0] = (output[index] - output[index + 2] / 2.0) / xGain;//top left x
+            location[1] = (output[index + 1] - output[index + 3] / 2.0) / yGain;//top left y
+            location[2] = (output[index] + output[index + 2] / 2.0) / xGain;//bottom right x
+            location[3] = (output[index + 1] + output[index + 3] / 2.0) / yGain;//bottom right y
+
+            locations.emplace_back(location);
+
+            rect = cv::Rect(location[0], location[1],location[2] - location[0], location[3] - location[1]);
+            src_rects.push_back(rect);
         }
         confidences.emplace_back(output[index + confidenceIndex]);
 
@@ -100,6 +101,7 @@ char *Detector::yolov5Analysis(std::vector<Ort::Value> &output_tensor, int width
     cJSON_AddItemToObject(result, "data", items);
     char *resultJson = cJSON_PrintUnformatted(result);
     return resultJson;
+
 }
 
 int Detector::unload(){
